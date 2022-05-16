@@ -6,7 +6,7 @@
 /*   By: jarredon <jarredon@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 15:32:14 by jarredon          #+#    #+#             */
-/*   Updated: 2022/05/16 19:06:19 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/05/16 21:12:19 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	*eat(void *args)
 		print_log(philo, "has taken a fork");
 		print_log(philo, "is eating");
 		philo->last_meal = get_time();
-		/*philo->num_meals++;*/
+		philo->num_meals++;
 		ft_sleep(philo->vars->time2eat);
 		pthread_mutex_unlock(philo->fork_a);
 		pthread_mutex_unlock(philo->fork_b);
@@ -96,7 +96,7 @@ t_philo	*init_philos(t_vars *vars, pthread_mutex_t *forks)
 	{
 		philos[i].id = i;
 		philos[i].last_meal = vars->init_time;
-		/*philos[i].num_meals = 0;*/
+		philos[i].num_meals = 0;
 		philos[i].fork_a = &forks[i];
 		philos[i].fork_b = &forks[(i + 1) % vars->n_philo];
 		if (i % 2 == 1)

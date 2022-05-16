@@ -7,7 +7,7 @@ OBJ = $(SRC:.c=.o)
 NAME = philo
 
 $(NAME): $(OBJ) philo.h
-	$(CC) $(OBJ) -o $(NAME)
+	$(CC) $(OBJ) -o $(NAME) -pthread
 
 clean:
 	@rm -f $(OBJ)

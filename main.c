@@ -6,7 +6,7 @@
 /*   By: jarredon <jarredon@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 15:25:55 by jarredon          #+#    #+#             */
-/*   Updated: 2022/05/16 18:52:12 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/05/16 21:25:21 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,27 @@
 void	death_checker(t_philo *philos)
 {
 	int	i;
-	/*int	j;*/
+	int	j;
 
 	while (!philos->vars->death)
 	{
-		/*j = 0;*/
+		j = 0;
 		i = -1;
 		while (++i < philos->vars->n_philo)
 		{
-			if (get_time() - philos[i].last_meal > (long)philos[i].vars->time2die)
+			if (get_time() - philos[i].last_meal > philos[i].vars->time2die)
 			{
 				philos[i].vars->death = 1;
 				print_log(&philos[i], "died");
 				break ;
-				/*if (philos->vars->max_meals && philos)*/
 			}
+			if (philos->vars->max_meals
+				&& philos[i].num_meals >= philos->vars->max_meals)
+				j++;
 			usleep(100);
 		}
+		if (j == philos->vars->n_philo)
+			break ;
 	}
 }
 
