@@ -46,9 +46,15 @@ int	main(int ac, char **av)
 		puts("Cannot open thread");
 		return (-1);
 	}
+
 	/*pthread_detach(thread2);*/
+
 	pthread_join(thread2, (void **)&data);
 	printf("Main finish... data: %d\n", *data);
+
+	/*sleep(3);*/
+	/*printf("Main finish...\n");*/
+
 	/*pthread_exit(0);*/
 	exit(0);
 }
