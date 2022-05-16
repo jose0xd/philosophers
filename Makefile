@@ -1,12 +1,12 @@
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra
 
-SRC = main.c utils.c
+SRC = main.c utils.c init.c
 OBJ = $(SRC:.c=.o)
 
 NAME = philo
 
-$(NAME): $(OBJ)
+$(NAME): $(OBJ) philo.h
 	$(CC) $(OBJ) -o $(NAME)
 
 clean:
