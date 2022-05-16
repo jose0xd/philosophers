@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <sys/time.h>
 #include "philo.h"
 
 void	*eat(void *args);
@@ -14,6 +15,7 @@ typedef struct s_vars
 	int	time2sleep;
 	int	max_meals;
 	int	death;
+	int	init_time;
 }	t_vars;
 
 typedef struct s_philo
@@ -33,10 +35,18 @@ static void	print_usage(void)
 	printf("             [number_of_times_each_philosopher_must_eat]\n");
 }
 
+int	get_time(void)
+{
+	struct timeval	tp;
+
+	gettimeofday(&tp, NULL);
+	return (tp.tv_sec * 1000 + tp.tv_usec / 1000);
+}
+
 // TODO check input
 static t_vars	*init_vars(int ac, char **av)
 {
-	t_vars	*vars;
+	t_vars			*vars;
 
 	if (ac != 5 && ac !=6)
 	{
@@ -53,6 +63,7 @@ static t_vars	*init_vars(int ac, char **av)
 	else
 		vars->max_meals = 0;
 	vars->death = 0;
+	vars->init_time = get_time();
 	return (vars);
 }
 
@@ -111,12 +122,18 @@ void	*eat(void *args)
 		pthread_mutex_lock(philo->fork_b);
 		printf("Philosopher %d take a fork.\n", philo->id);
 		printf("Philosopher %d is eating...\n", philo->id);
+		philo->last_meal = get_time();
 		usleep(philo->vars->time2eat * 1000);
 		pthread_mutex_unlock(philo->fork_a);
 		pthread_mutex_unlock(philo->fork_b);
 		printf("Philosopher %d is sleeping...\n", philo->id);
 		usleep(philo->vars->time2sleep * 1000);
 		printf("Philosopher %d is thinking...\n", philo->id);
+		if (get_time() - philo->last_meal > philo->vars->time2die)
+		{
+			printf("Philosopher %d died\n", philo->id);
+			philo->vars->death = 1;
+		}
 	}
 	return (NULL);
 }
