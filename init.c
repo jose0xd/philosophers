@@ -6,7 +6,7 @@
 /*   By: jarredon <jarredon@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 15:32:14 by jarredon          #+#    #+#             */
-/*   Updated: 2022/05/16 18:51:27 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/05/16 19:06:19 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ t_philo	*init_philos(t_vars *vars, pthread_mutex_t *forks)
 		/*philos[i].num_meals = 0;*/
 		philos[i].fork_a = &forks[i];
 		philos[i].fork_b = &forks[(i + 1) % vars->n_philo];
-		if (i == vars->n_philo - 1)
+		if (i % 2 == 1)
 		{
 			philos[i].fork_a = philos[i].fork_b;
 			philos[i].fork_b = &forks[i];
