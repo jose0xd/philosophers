@@ -6,17 +6,17 @@
 /*   By: jarredon <jarredon@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 15:32:14 by jarredon          #+#    #+#             */
-/*   Updated: 2022/05/17 17:14:03 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/05/17 19:07:32 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 #include "philo.h"
 
 #include <stdio.h>
 
-/*
 static void	*death_checker(void *void_philos)
 {
 	int		i;
@@ -30,18 +30,15 @@ static void	*death_checker(void *void_philos)
 		i = -1;
 		while (++i < philos->vars->n_philo)
 		{
-			if (get_time() - philos[i].last_meal > philos[i].vars->time2die)
-			{
-				philos[i].vars->death = 1;
-				print_log(&philos[i], "died");
-				break ;
-			}
+			/*if (get_time() - philos[i].last_meal > philos->vars->time2die)*/
+			/*{*/
+				/*philos->vars->death = 1;*/
+				/*print_log(&philos[i], "died");*/
+				/*break ;*/
+			/*}*/
 			if (philos->vars->max_meals
 				&& philos[i].num_meals >= philos->vars->max_meals)
-			{
-		printf("max_meals: %d\n", philos->vars->max_meals);
 				j++;
-			}
 			usleep(100);
 		}
 		if (j == philos->vars->n_philo)
@@ -49,13 +46,12 @@ static void	*death_checker(void *void_philos)
 	}
 	return (NULL);
 }
-*/
 
 static void	*eat(t_philo *philo)
 {
+	pthread_create(&philo->vars->watcher, NULL, death_checker, philo);
 	if (philo->id % 2)
 		ft_sleep(1);
-	/*pthread_create(&philo->vars->watcher, NULL, death_checker, philo);*/
 	while (!philo->vars->death)
 	{
 		sem_wait(philo->forks);
@@ -72,8 +68,8 @@ static void	*eat(t_philo *philo)
 		ft_sleep(philo->vars->time2sleep);
 		print_log(philo, "is thinking");
 	}
-	/*return (NULL);*/
 	exit(0);
+	/*return (NULL);*/
 }
 
 // TODO check input
@@ -120,5 +116,10 @@ t_philo	*init_philos(t_vars *vars, sem_t *forks)
 	}
 	ft_sleep(5000);
 	/*waitpid(-1, &i, 0);*/
+	i = -1;
+	while (++i < vars->n_philo)
+	{
+		kill(philos[i].process, SIGKILL);
+	}
 	return (philos);
 }
