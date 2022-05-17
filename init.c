@@ -6,7 +6,7 @@
 /*   By: jarredon <jarredon@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 15:32:14 by jarredon          #+#    #+#             */
-/*   Updated: 2022/05/16 21:12:19 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/05/17 10:49:45 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ static void	*eat(void *args)
 	t_philo	*philo;
 
 	philo = args;
+	if (philo->id % 2)
+		ft_sleep(1);
 	while (!philo->vars->death)
 	{
 		pthread_mutex_lock(philo->fork_a);
@@ -94,16 +96,11 @@ t_philo	*init_philos(t_vars *vars, pthread_mutex_t *forks)
 	i = -1;
 	while (++i < vars->n_philo)
 	{
-		philos[i].id = i;
+		philos[i].id = i + 1;
 		philos[i].last_meal = vars->init_time;
 		philos[i].num_meals = 0;
 		philos[i].fork_a = &forks[i];
 		philos[i].fork_b = &forks[(i + 1) % vars->n_philo];
-		if (i % 2 == 1)
-		{
-			philos[i].fork_a = philos[i].fork_b;
-			philos[i].fork_b = &forks[i];
-		}
 		philos[i].vars = vars;
 		pthread_create(&(philos[i].thread), NULL, eat, &philos[i]);
 	}
