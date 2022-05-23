@@ -6,70 +6,62 @@
 /*   By: jarredon <jarredon@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 15:32:14 by jarredon          #+#    #+#             */
-/*   Updated: 2022/05/17 19:07:32 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/05/23 12:09:29 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <unistd.h>
-#include <signal.h>
 #include "philo.h"
 
-#include <stdio.h>
-
-static void	*death_checker(void *void_philos)
+static void	*death_checker(void *void_philo)
 {
-	int		i;
-	int		j;
-	t_philo	*philos;
+	t_philo	*philo;
 
-	philos = void_philos;
-	while (!philos->vars->death)
+	philo = void_philo;
+	while (!philo->vars->death)
 	{
-		j = 0;
-		i = -1;
-		while (++i < philos->vars->n_philo)
+		if (get_time() - philo->last_meal > philo->vars->time2die)
 		{
-			/*if (get_time() - philos[i].last_meal > philos->vars->time2die)*/
-			/*{*/
-				/*philos->vars->death = 1;*/
-				/*print_log(&philos[i], "died");*/
-				/*break ;*/
-			/*}*/
-			if (philos->vars->max_meals
-				&& philos[i].num_meals >= philos->vars->max_meals)
-				j++;
-			usleep(100);
+			philo->vars->death = 1;
+			print_log(philo, "died");
+			exit(1);
 		}
-		if (j == philos->vars->n_philo)
+		if (philo->vars->max_meals
+			&& philo->num_meals >= philo->vars->max_meals)
 			break ;
+		usleep(100);
 	}
 	return (NULL);
 }
 
 static void	*eat(t_philo *philo)
 {
-	pthread_create(&philo->vars->watcher, NULL, death_checker, philo);
+	pthread_create(&philo->watcher, NULL, death_checker, philo);
 	if (philo->id % 2)
 		ft_sleep(1);
 	while (!philo->vars->death)
 	{
-		sem_wait(philo->forks);
+		sem_wait(philo->vars->forks);
 		print_log(philo, "has taken a fork");
-		sem_wait(philo->forks);
+		sem_wait(philo->vars->forks);
 		print_log(philo, "has taken a fork");
 		print_log(philo, "is eating");
 		philo->last_meal = get_time();
 		philo->num_meals++;
 		ft_sleep(philo->vars->time2eat);
-		sem_post(philo->forks);
-		sem_post(philo->forks);
+		sem_post(philo->vars->forks);
+		sem_post(philo->vars->forks);
+		if (philo->vars->max_meals
+			&& philo->num_meals >= philo->vars->max_meals)
+			break ;
 		print_log(philo, "is sleeping");
 		ft_sleep(philo->vars->time2sleep);
 		print_log(philo, "is thinking");
 	}
+	if (philo->vars->death)
+		exit(1);
 	exit(0);
-	/*return (NULL);*/
 }
 
 // TODO check input
@@ -96,7 +88,7 @@ t_vars	*init_vars(int ac, char **av)
 	return (vars);
 }
 
-t_philo	*init_philos(t_vars *vars, sem_t *forks)
+t_philo	*init_philos(t_vars *vars)
 {
 	t_philo	*philos;
 	int		i;
@@ -108,18 +100,10 @@ t_philo	*init_philos(t_vars *vars, sem_t *forks)
 		philos[i].id = i + 1;
 		philos[i].last_meal = vars->init_time;
 		philos[i].num_meals = 0;
-		philos[i].forks = forks;
 		philos[i].vars = vars;
 		philos[i].process = fork();
 		if (philos[i].process == 0)
 			eat(&philos[i]);
-	}
-	ft_sleep(5000);
-	/*waitpid(-1, &i, 0);*/
-	i = -1;
-	while (++i < vars->n_philo)
-	{
-		kill(philos[i].process, SIGKILL);
 	}
 	return (philos);
 }
