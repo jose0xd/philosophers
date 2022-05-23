@@ -6,7 +6,7 @@
 /*   By: jarredon <jarredon@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 15:32:14 by jarredon          #+#    #+#             */
-/*   Updated: 2022/05/23 12:09:29 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/05/23 12:24:18 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static void	*death_checker(void *void_philo)
 		{
 			philo->vars->death = 1;
 			print_log(philo, "died");
+			sem_wait(philo->vars->writer);
 			exit(1);
 		}
 		if (philo->vars->max_meals

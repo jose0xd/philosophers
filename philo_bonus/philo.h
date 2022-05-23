@@ -6,7 +6,7 @@
 /*   By: jarredon <jarredon@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 15:24:22 by jarredon          #+#    #+#             */
-/*   Updated: 2022/05/23 11:58:43 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/05/23 12:19:21 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,15 @@
 
 typedef struct s_vars
 {
-	int			n_philo;
-	int			time2die;
-	int			time2eat;
-	int			time2sleep;
-	int			max_meals;
-	int			death;
-	long		init_time;
-	sem_t		*forks;
+	int		n_philo;
+	int		time2die;
+	int		time2eat;
+	int		time2sleep;
+	int		max_meals;
+	int		death;
+	long	init_time;
+	sem_t	*forks;
+	sem_t	*writer;
 }	t_vars;
 
 typedef struct s_philo

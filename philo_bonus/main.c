@@ -6,7 +6,7 @@
 /*   By: jarredon <jarredon@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 15:25:55 by jarredon          #+#    #+#             */
-/*   Updated: 2022/05/23 12:10:37 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/05/23 12:32:37 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,16 @@ int	main(int ac, char **av)
 	if (!vars)
 		return (0);
 	sem_unlink("/forks");
+	sem_unlink("/writer");
 	vars->forks = sem_open("/forks", O_CREAT, 0644, vars->n_philo);
-	if (vars->forks == SEM_FAILED)
+	vars->writer = sem_open("/writer", O_CREAT, 0644, 1);
+	if (vars->forks == SEM_FAILED || vars->writer == SEM_FAILED)
 	{
 		free(vars);
 		return (-1);
 	}
 	philos = init_philos(vars);
 	loop(philos);
-	//sem_close(vars->forks);
 	sem_unlink("/forks");
 	free(vars);
 	free(philos);
