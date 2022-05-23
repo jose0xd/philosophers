@@ -6,14 +6,13 @@
 /*   By: jarredon <jarredon@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 15:24:22 by jarredon          #+#    #+#             */
-/*   Updated: 2022/05/23 15:55:53 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/05/16 18:43:18 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# include <semaphore.h>
 # include <pthread.h>
 
 typedef struct s_vars
@@ -25,31 +24,28 @@ typedef struct s_vars
 	int		max_meals;
 	int		death;
 	long	init_time;
-	sem_t	*forks;
-	sem_t	*writer;
 }	t_vars;
 
 typedef struct s_philo
 {
-	int			id;
-	long		last_meal;
-	int			num_meals;
-	pthread_t	watcher;
-	t_vars		*vars;
-	pid_t		process;
+	int				id;
+	long			last_meal;
+	int				num_meals;
+	pthread_mutex_t	*fork_a;
+	pthread_mutex_t	*fork_b;
+	t_vars			*vars;
+	pthread_t		thread;
 }	t_philo;
 
-int		ft_atoi(const char *str);
-void	print_usage(void);
-long	get_time(void);
-void	ft_sleep(long time);
-void	print_log(t_philo *philo, char *str);
+int				ft_atoi(const char *str);
+void			print_usage(void);
+long			get_time(void);
+void			ft_sleep(long time);
+void			print_log(t_philo *philo, char *str);
 
-t_vars	*init_vars(int ac, char **av);
-t_philo	*init_philos(t_vars *vars);
-
-void	ft_putchar_fd(char c, int fd);
-void	ft_putstr_fd(char *s, int fd);
-void	ft_putnbr_fd(int n, int fd);
+t_vars			*init_vars(int ac, char **av);
+pthread_mutex_t	*init_forks(int n_forks);
+void			destroy_forks(pthread_mutex_t *forks, int n_forks);
+t_philo			*init_philos(t_vars *vars, pthread_mutex_t *forks);
 
 #endif

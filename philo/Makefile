@@ -1,10 +1,10 @@
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra
 
-SRC = main.c utils.c init.c print.c
+SRC = main.c utils.c init.c
 OBJ = $(SRC:.c=.o)
 
-NAME = philo_bonus
+NAME = philo
 
 all: $(NAME)
 

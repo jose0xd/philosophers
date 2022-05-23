@@ -6,7 +6,7 @@
 /*   By: jarredon <jarredon@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 15:24:12 by jarredon          #+#    #+#             */
-/*   Updated: 2022/05/23 16:11:31 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/05/16 18:55:42 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,6 @@ void	ft_sleep(long time)
 
 void	print_log(t_philo *philo, char *str)
 {
-	sem_wait(philo->vars->writer);
-	ft_putnbr_fd((int)(get_time() - philo->vars->init_time), 1);
-	ft_putchar_fd(' ', 1);
-	ft_putnbr_fd(philo->id, 1);
-	ft_putchar_fd(' ', 1);
-	ft_putstr_fd(str, 1);
-	ft_putchar_fd('\n', 1);
-	sem_post(philo->vars->writer);
+	printf("%ld %d %s\n",
+		get_time() - philo->vars->init_time, philo->id, str);
 }
